@@ -11,6 +11,10 @@ import UIKit
 
 final public class NetworkActivityIndicatorManager {
     
+    // MARK: - Singleton
+    
+    public static let sharedManager = NetworkActivityIndicatorManager()
+    
     // MARK: - Properties
     
     public let URLSession: NSURLSession
@@ -52,20 +56,6 @@ final public class NetworkActivityIndicatorManager {
     private var lastNetworkActivityIndicatorVisibleStateTransitionToTrue: NSDate?
     
     // MARK: - Initialization
-    
-    class var sharedManager: NetworkActivityIndicatorManager {
-        
-        struct Static {
-            static var onceToken : dispatch_once_t = 0
-            static var instance : NetworkActivityIndicatorManager? = nil
-        }
-        
-        dispatch_once(&Static.onceToken) {
-            Static.instance = NetworkActivityIndicatorManager()
-        }
-        
-        return Static.instance!
-    }
     
     public init(URLSession: NSURLSession = NSURLSession.sharedSession(), updateInterval: NSTimeInterval = 0.001, minimumNetworkActivityIndicatorVisiblityInterval: NSTimeInterval = 1) {
         
