@@ -13,12 +13,15 @@ import NetworkObjects
 import ExSwift
 
 /** Fetches instances of an entity on the server and displays them in a table view. Supports single section only. */
-public class FetchedResultsViewController: UITableViewController, NSFetchedResultsControllerDelegate {
+public class FetchedResultsViewController: UITableViewController, SearchResultsControllerDelegate {
     
     // MARK: - Properties
     
-    /** NetworkObjects Store that this view controller will use. Make sure to set this value before loading this class. Store must have its dateCachedAttributeName set. */
+    /** NetworkObjects Store that this view controller will use. Make sure to set this value before loading this class. Store must have its dateCachedAttributeName set. Must set before 'fetchRequest'. */
     public var store: Store!
+    
+    /** Sort descriptors that are additionally applied to the search results. Not sent with requests. Must set before 'fetchRequest'. */
+    public var localSortDescriptors: [NSSortDescriptor]?
     
     /** The fetch request that will be converted into a search request. Also used to created a fetched results controller to display content. */
     public var fetchRequest: NSFetchRequest? {
@@ -27,41 +30,19 @@ public class FetchedResultsViewController: UITableViewController, NSFetchedResul
             
             if fetchRequest == nil {
                 
-                self.fetchedResultsController = nil
+                self.searchResultsController = nil
                 
                 return
             }
             
-            let searchRequest = fetchRequest!.copy() as! NSFetchRequest
-            
-            assert(searchRequest.sortDescriptors != nil, "The fetched request for the seach operation must specify sort descriptors")
-            
-            // add additional sort descriptors
-            if let additionalSortDescriptors = self.localSortDescriptors {
-                
-                var sortDescriptors = additionalSortDescriptors
-                
-                sortDescriptors += searchRequest.sortDescriptors as! [NSSortDescriptor]
-                
-                searchRequest.sortDescriptors = sortDescriptors
-            }
-            
-            // create new fetched results controller
-            
-            let fetchedResultsController = NSFetchedResultsController(fetchRequest: searchRequest, managedObjectContext: self.store.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
-            
-            fetchedResultsController.delegate = self
-            
-            self.fetchedResultsController = fetchedResultsController
+            self.searchResultsController = SearchResultsController(fetchRequest: fetchRequest!, store: self.store, localSortDescriptors: self.localSortDescriptors, delegate: self)
             
             // perform fetch if view is loaded
             if self.isViewLoaded() {
                 
-                var error: NSError?
+                let error = self.searchResultsController!.loadCache()
                 
-                self.fetchedResultsController?.performFetch(&error)
-                
-                assert(error == nil, "Could not execute -performFetch: on NSFetchedResultsController. (\(error!.localizedDescription))")
+                assert(error == nil, "Could not load cache. (\(error!.localizedDescription))")
                 
                 // load from server
                 self.refresh(self)
@@ -72,17 +53,19 @@ public class FetchedResultsViewController: UITableViewController, NSFetchedResul
     /** Date the data was last pulled from the server. */
     public private(set) var datedRefreshed: NSDate?
     
+    // MARK: - Private Properties
+    
+    private var searchResultsController: SearchResultsController?
+    
     // MARK: - Initialization
     
     public override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        var error: NSError?
+        let error = self.searchResultsController!.loadCache()
         
-        self.fetchedResultsController?.performFetch(&error)
-        
-        assert(error == nil, "Could not execute -performFetch: on NSFetchedResultsController. (\(error!.localizedDescription))")
+        assert(error == nil, "Could not Could not load cache. (\(error!.localizedDescription))")
     }
     
     public override func viewWillAppear(animated: Bool) {
@@ -99,7 +82,7 @@ public class FetchedResultsViewController: UITableViewController, NSFetchedResul
         
         assert(indexPath.section == 0, "Only single section supported")
         
-        return self.searchResults[indexPath.row]
+        return self.searchResultsController!.objectAtIndex(UInt(indexPath.row))
     }
     
     /** Subclasses should overrride this to provide custom cells. */
@@ -168,35 +151,7 @@ public class FetchedResultsViewController: UITableViewController, NSFetchedResul
         
         self.datedRefreshed = NSDate()
         
-        self.store.performSearch(self.fetchRequest!, completionBlock: {[weak self] (error: NSError?, results: [NSManagedObject]?) -> Void in
-            
-            // view controller has been deallocated
-            if self == nil {
-                
-                return
-            }
-            
-            NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                
-                self!.refreshControl?.endRefreshing()
-                
-                // show error
-                if error != nil {
-                    
-                    self!.showErrorAlert(error!.localizedDescription, retryHandler: { () -> Void in
-                        
-                        self!.refresh(self!)
-                    })
-                    
-                    return
-                }
-                
-                // save results
-                self!.searchResults = results!
-                
-                self!.tableView.reloadData()
-            })
-        })
+        self.searchResultsController!.performSearch(sender)
     }
     
     // MARK: - Private Methods
@@ -231,7 +186,7 @@ public class FetchedResultsViewController: UITableViewController, NSFetchedResul
     
     public override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return self.searchResults.count
+        return self.searchResultsController?.searchResults.count ?? 0
     }
     
     public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -299,88 +254,61 @@ public class FetchedResultsViewController: UITableViewController, NSFetchedResul
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
     
-    // MARK: - NSFetchedResultsControllerDelegate
+    // MARK: - SearchResultsControllerDelegate
     
-    public func controllerWillChangeContent(controller: NSFetchedResultsController) {
+    public func controller(controller: SearchResultsController, didPerformSearchWithError error: NSError?) {
+        
+        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+            
+            self.refreshControl?.endRefreshing()
+            
+            // show error
+            if error != nil {
+                
+                self.showErrorAlert(error!.localizedDescription, retryHandler: { () -> Void in
+                    
+                    self.refresh(self)
+                })
+                
+                return
+            }
+        }
+    }
+    
+    public func controllerWillChangeContent(controller: SearchResultsController) {
+        
         self.tableView.beginUpdates()
     }
     
-    public func controller(controller: NSFetchedResultsController,
-        didChangeObject object: AnyObject,
-        atIndexPath indexPath: NSIndexPath?,
-        forChangeType type: NSFetchedResultsChangeType,
-        newIndexPath: NSIndexPath?) {
-            
-            let managedObject = object as! NSManagedObject
-            
-            switch type {
-                
-            case .Insert:
-                
-                // already inserted
-                if (self.searchResults as NSArray).containsObject(managedObject) {
-                    
-                    return
-                }
-                
-                self.searchResults.append(managedObject)
-                
-                self.searchResults = (self.searchResults as NSArray).sortedArrayUsingDescriptors(self.fetchRequest!.sortDescriptors!) as! [NSManagedObject]
-                
-                let row = (self.searchResults as NSArray).indexOfObject(managedObject)
-                
-                self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: row, inSection: 0)], withRowAnimation: .Automatic)
-                
-            case .Update:
-                
-                let row = (self.searchResults as NSArray).indexOfObject(managedObject)
-                
-                let managedObjectIndexPath = NSIndexPath(forRow: row, inSection: 0)
-                
-                if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0)) {
-                    
-                    self.configureCell(cell, atIndexPath: managedObjectIndexPath)
-                }
-                
-            case .Move:
-                
-                // get old row
-                
-                let oldRow = (self.searchResults as NSArray).indexOfObject(managedObject)
-                
-                self.searchResults = (self.searchResults as NSArray).sortedArrayUsingDescriptors(self.fetchRequest!.sortDescriptors!) as! [NSManagedObject]
-                
-                let newRow = (self.searchResults as NSArray).indexOfObject(managedObject)
-                
-                if newRow != oldRow {
-                    
-                    self.tableView.deleteRowsAtIndexPaths([NSIndexPath(forRow: oldRow, inSection: 0)], withRowAnimation: .Automatic)
-                    
-                    self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: newRow, inSection: 0)], withRowAnimation: .Automatic)
-                }
-                
-                return
-            case .Delete:
-                
-                // already deleted
-                if !(self.searchResults as NSArray).containsObject(managedObject) {
-                    
-                    return
-                }
-                
-                let row = (self.searchResults as NSArray).indexOfObject(managedObject)
-                
-                self.searchResults.removeAtIndex(row)
-                
-                self.tableView.deleteRowsAtIndexPaths([NSIndexPath(forRow: row, inSection: 0)], withRowAnimation: .Automatic)
-                
-                return
-            default:
-                return
-            }
+    public func controllerDidChangeContent(controller: SearchResultsController) {
+        
+        self.tableView.endUpdates()
     }
     
-    public func controllerDidChangeContent(controller: NSFetchedResultsController) {
-        self.tableView.endUpdates()
+    public func controller(controller: SearchResultsController, didInsertManagedObject managedObject: NSManagedObject, atIndex index: UInt) {
+        
+        self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: Int(index), inSection: 0)], withRowAnimation: .Automatic)
+    }
+    
+    public func controller(controller: SearchResultsController, didDeleteManagedObject managedObject: NSManagedObject, atIndex index: UInt) {
+        
+        self.tableView.deleteRowsAtIndexPaths([NSIndexPath(forRow: Int(index), inSection: 0)], withRowAnimation: .Automatic)
+    }
+    
+    public func controller(controller: SearchResultsController, didUpdateManagedObject managedObject: NSManagedObject, atIndex index: UInt) {
+        
+        let indexPath = NSIndexPath(forRow: Int(index), inSection: 0)
+        
+        if let cell = self.tableView.cellForRowAtIndexPath(indexPath) {
+            
+            self.configureCell(cell, atIndexPath: indexPath)
+        }
+    }
+    
+    public func controller(controller: SearchResultsController, didMoveManagedObject managedObject: NSManagedObject, atIndex newIndex: UInt, toIndex oldIndex: UInt) {
+        
+        self.tableView.deleteRowsAtIndexPaths([NSIndexPath(forRow: Int(newIndex), inSection: 0)], withRowAnimation: .Automatic)
+        
+        self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: Int(oldIndex), inSection: 0)], withRowAnimation: .Automatic)
     }
 }

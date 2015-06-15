@@ -101,8 +101,8 @@
 				6E0268C41B2F4E0A0035A643 /* NetworkObjectsUI.h */,
 				6E0269041B2F53FD0035A643 /* ErrorAlert.swift */,
 				6E0269021B2F53EC0035A643 /* NetworkActivityIndicatorManager.swift */,
-				6E0268DB1B2F4EED0035A643 /* FetchedResultsViewController.swift */,
 				6E0269061B2F556F0035A643 /* SearchResultsController.swift */,
+				6E0268DB1B2F4EED0035A643 /* FetchedResultsViewController.swift */,
 				6E0268C21B2F4E0A0035A643 /* Supporting Files */,
 			);
 			path = NetworkObjectsUI;

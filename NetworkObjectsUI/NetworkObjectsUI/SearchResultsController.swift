@@ -18,23 +18,30 @@ final public class SearchResultsController: NSFetchedResultsControllerDelegate {
     /** The fetch request this controller will execute. Do not change properties after initializing the controller. */
     public let fetchRequest: NSFetchRequest
     
+    /** Store that will execute and cache the seach request. Store's 'searchPath' property must not be nil. */
     public let store: Store
     
     /** Sort descriptors that are additionally applied to the search results. Not sent with requests. */
     public let localSortDescriptors: [NSSortDescriptor]?
     
+    /** The search controller's delegate. */
     public weak var delegate: SearchResultsControllerDelegate?
+    
+    /** The cached search results. */
+    public private(set) var searchResults = [NSManagedObject]()
     
     // MARK: - Private Properties
     
     /** Managed objects fetched from the server. */
     private let fetchedResultsController: NSFetchedResultsController
     
-    private var searchResults = [NSManagedObject]()
-    
     // MARK: - Initialization
     
     public init(fetchRequest: NSFetchRequest, store: Store, localSortDescriptors: [NSSortDescriptor]? = nil, delegate: SearchResultsControllerDelegate? = nil) {
+        
+        assert(store.searchPath != nil, "Store's 'searchPath' must not be nil")
+        
+        assert(fetchRequest.sortDescriptors != nil, "The fetch request for the seach operation must specify sort descriptors")
         
         self.fetchRequest = fetchRequest
         self.store = store
@@ -42,8 +49,6 @@ final public class SearchResultsController: NSFetchedResultsControllerDelegate {
         self.delegate = delegate
         
         let searchRequest = fetchRequest.copy() as! NSFetchRequest
-        
-        assert(searchRequest.sortDescriptors != nil, "The fetch request for the seach operation must specify sort descriptors")
         
         // add additional sort descriptors
         if let additionalSortDescriptors = self.localSortDescriptors {
@@ -65,7 +70,31 @@ final public class SearchResultsController: NSFetchedResultsControllerDelegate {
     
     // MARK: - Methods
     
-    public func performFetch() -> NSError? {
+    /** Fetches search results from server. Must call 'loadCache()' to register for delegate notifications regarding changes to the cache. */
+    @IBAction public func performSearch(sender: AnyObject?) {
+        
+        self.store.performSearch(self.fetchRequest, completionBlock: {[weak self] (error: NSError?, results: [NSManagedObject]?) -> Void in
+            
+            if self == nil {
+                
+                return
+            }
+            
+            if error != nil {
+                
+                self!.delegate?.controller(self!, didPerformSearchWithError: error!)
+            }
+            
+            // save results
+            self!.searchResults = results!
+            
+            // inform delegate
+            self!.delegate?.controller(self!, didPerformSearchWithError: nil)
+        })
+    }
+    
+    /** Loads caches objects. Does not fetch from server. Call this to recieve delegate notificationes about changes in the cache. */
+    public func loadCache() -> NSError? {
         
         var error: NSError?
         
@@ -136,7 +165,6 @@ final public class SearchResultsController: NSFetchedResultsControllerDelegate {
                     self.delegate?.controller(self, didMoveManagedObject: managedObject, atIndex: UInt(oldRow), toIndex: UInt(newRow))
                 }
                 
-                return
             case .Delete:
                 
                 // already deleted
@@ -151,7 +179,6 @@ final public class SearchResultsController: NSFetchedResultsControllerDelegate {
                 
                 self.delegate?.controller(self, didDeleteManagedObject: managedObject, atIndex: UInt(row))
                 
-                return
             default:
                 return
             }
@@ -165,8 +192,11 @@ final public class SearchResultsController: NSFetchedResultsControllerDelegate {
 
 // MARK: - Protocol
 
-/*  */
+/* Delegate methods for the search controller. */
 public protocol SearchResultsControllerDelegate: class {
+    
+    /** Informs the delegate that a search request has completed with the specified error (if any). */
+    func controller(controller: SearchResultsController, didPerformSearchWithError error: NSError?)
     
     func controllerWillChangeContent(controller: SearchResultsController)
     
@@ -178,6 +208,6 @@ public protocol SearchResultsControllerDelegate: class {
     
     func controller(controller: SearchResultsController, didUpdateManagedObject managedObject: NSManagedObject, atIndex index: UInt)
     
-    func controller(controller: SearchResultsController, didMoveManagedObject managedObject: NSManagedObject, atIndex index: UInt, toIndex: UInt)
+    func controller(controller: SearchResultsController, didMoveManagedObject managedObject: NSManagedObject, atIndex oldIndex: UInt, toIndex newIndex: UInt)
 }
 
