@@ -1,6 +1,6 @@
 //
 //  FetchedResultsViewController.swift
-//  Cerradura
+//  NetworkObjectsUI
 //
 //  Created by Alsey Coleman Miller on 12/10/14.
 //  Copyright (c) 2014 ColemanCDA. All rights reserved.
@@ -69,18 +69,8 @@ public class FetchedResultsViewController: UITableViewController, NSFetchedResul
         }
     }
     
-    /** Sort descriptors that are additionally applied to the search results. Not sent with requests. Must set before setting fetch request. */
-    public var localSortDescriptors: [NSSortDescriptor]?
-    
     /** Date the data was last pulled from the server. */
     public private(set) var datedRefreshed: NSDate?
-    
-    // MARK: - Private Properties
-    
-    /** Managed objects fetched from the server. Do not modify. */
-    private var searchResults = [NSManagedObject]()
-    
-    private var fetchedResultsController: NSFetchedResultsController?
     
     // MARK: - Initialization
     

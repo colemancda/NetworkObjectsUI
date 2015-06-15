@@ -19,6 +19,7 @@
 		6E0269011B2F53370035A643 /* RoutingHTTPServer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E0268FB1B2F53370035A643 /* RoutingHTTPServer.framework */; };
 		6E0269031B2F53EC0035A643 /* NetworkActivityIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0269021B2F53EC0035A643 /* NetworkActivityIndicatorManager.swift */; };
 		6E0269051B2F53FD0035A643 /* ErrorAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0269041B2F53FD0035A643 /* ErrorAlert.swift */; };
+		6E0269071B2F556F0035A643 /* SearchResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0269061B2F556F0035A643 /* SearchResultsController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		6E0268FB1B2F53370035A643 /* RoutingHTTPServer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RoutingHTTPServer.framework; sourceTree = "<group>"; };
 		6E0269021B2F53EC0035A643 /* NetworkActivityIndicatorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkActivityIndicatorManager.swift; sourceTree = "<group>"; };
 		6E0269041B2F53FD0035A643 /* ErrorAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorAlert.swift; sourceTree = "<group>"; };
+		6E0269061B2F556F0035A643 /* SearchResultsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +102,7 @@
 				6E0269041B2F53FD0035A643 /* ErrorAlert.swift */,
 				6E0269021B2F53EC0035A643 /* NetworkActivityIndicatorManager.swift */,
 				6E0268DB1B2F4EED0035A643 /* FetchedResultsViewController.swift */,
+				6E0269061B2F556F0035A643 /* SearchResultsController.swift */,
 				6E0268C21B2F4E0A0035A643 /* Supporting Files */,
 			);
 			path = NetworkObjectsUI;
@@ -259,6 +262,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6E0269071B2F556F0035A643 /* SearchResultsController.swift in Sources */,
 				6E0268DC1B2F4EED0035A643 /* FetchedResultsViewController.swift in Sources */,
 				6E0269051B2F53FD0035A643 /* ErrorAlert.swift in Sources */,
 				6E0269031B2F53EC0035A643 /* NetworkActivityIndicatorManager.swift in Sources */,
