@@ -56,12 +56,6 @@
 		6E0268D01B2F4E0A0035A643 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6E0268D11B2F4E0A0035A643 /* NetworkObjectsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkObjectsUITests.swift; sourceTree = "<group>"; };
 		6E0268DB1B2F4EED0035A643 /* FetchedResultsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchedResultsViewController.swift; sourceTree = "<group>"; };
-		6E0268F61B2F53370035A643 /* CocoaAsyncSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CocoaAsyncSocket.framework; sourceTree = "<group>"; };
-		6E0268F71B2F53370035A643 /* CocoaHTTPServer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CocoaHTTPServer.framework; sourceTree = "<group>"; };
-		6E0268F81B2F53370035A643 /* CocoaLumberjack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CocoaLumberjack.framework; sourceTree = "<group>"; };
-		6E0268F91B2F53370035A643 /* ExSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ExSwift.framework; sourceTree = "<group>"; };
-		6E0268FA1B2F53370035A643 /* NetworkObjects.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = NetworkObjects.framework; sourceTree = "<group>"; };
-		6E0268FB1B2F53370035A643 /* RoutingHTTPServer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RoutingHTTPServer.framework; sourceTree = "<group>"; };
 		6E0269021B2F53EC0035A643 /* NetworkActivityIndicatorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkActivityIndicatorManager.swift; sourceTree = "<group>"; };
 		6E0269041B2F53FD0035A643 /* ErrorAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorAlert.swift; sourceTree = "<group>"; };
 		6E0269061B2F556F0035A643 /* SearchResultsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsController.swift; sourceTree = "<group>"; };
@@ -149,23 +143,8 @@
 			isa = PBXGroup;
 			children = (
 				6E10FE311B3126E00097F12F /* NetworkObjects.xcodeproj */,
-				6E0268F51B2F53370035A643 /* iOS */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		6E0268F51B2F53370035A643 /* iOS */ = {
-			isa = PBXGroup;
-			children = (
-				6E0268F61B2F53370035A643 /* CocoaAsyncSocket.framework */,
-				6E0268F71B2F53370035A643 /* CocoaHTTPServer.framework */,
-				6E0268F81B2F53370035A643 /* CocoaLumberjack.framework */,
-				6E0268F91B2F53370035A643 /* ExSwift.framework */,
-				6E0268FA1B2F53370035A643 /* NetworkObjects.framework */,
-				6E0268FB1B2F53370035A643 /* RoutingHTTPServer.framework */,
-			);
-			name = iOS;
-			path = ../Carthage/Build/iOS;
 			sourceTree = "<group>";
 		};
 		6E10FE321B3126E00097F12F /* Products */ = {
