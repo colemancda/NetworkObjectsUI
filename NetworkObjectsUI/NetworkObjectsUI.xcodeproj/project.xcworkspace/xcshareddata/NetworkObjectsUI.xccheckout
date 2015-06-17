@@ -7,18 +7,42 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>129999C8-E3DB-49C2-ADC1-EFCDF68B1A4B</string>
 	<key>IDESourceControlProjectName</key>
-	<string>project</string>
+	<string>NetworkObjectsUI</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
+		<key>1C75F1C5CFCB95B3702F6F632FA05ED5244B519E</key>
+		<string>https://github.com/colemancda/CocoaAsyncSocket.git</string>
+		<key>71CFC0DE1DEFC877B0C5B9F98B971EBA2921D608</key>
+		<string>https://github.com/colemancda/CocoaHTTPServer.git</string>
+		<key>9D8E50737BD1955BFF09EC27A96CDD52A2431CCE</key>
+		<string>https://github.com/colemancda/RoutingHTTPServer.git</string>
+		<key>A5260C930E0CFC29BE4E638F3BCB24458F4E5121</key>
+		<string>https://github.com/colemancda/NetworkObjects.git</string>
 		<key>A68612D16629ED34AF576BD1E5D94391B7182E11</key>
 		<string>https://github.com/colemancda/NetworkObjectsUI.git</string>
+		<key>ACFD7193FD9E2A3F48E6D0863F74951FF595FC16</key>
+		<string>https://github.com/colemancda/Cerradura-iOS.git</string>
+		<key>E2F476CE895D3596DBE8080E8F363F8F94823E70</key>
+		<string>https://github.com/colemancda/ExSwift.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>NetworkObjectsUI/NetworkObjectsUI.xcodeproj/project.xcworkspace</string>
+	<string>NetworkObjectsUI/NetworkObjectsUI.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
+		<key>1C75F1C5CFCB95B3702F6F632FA05ED5244B519E</key>
+		<string>../../..NetworkObjects/RoutingHTTPServer/External/CocoaHTTPServer/CocoaAsyncSocket</string>
+		<key>71CFC0DE1DEFC877B0C5B9F98B971EBA2921D608</key>
+		<string>../../..NetworkObjects/RoutingHTTPServer/External/CocoaHTTPServer</string>
+		<key>9D8E50737BD1955BFF09EC27A96CDD52A2431CCE</key>
+		<string>../../..NetworkObjects/RoutingHTTPServer</string>
+		<key>A5260C930E0CFC29BE4E638F3BCB24458F4E5121</key>
+		<string>../../..NetworkObjects</string>
 		<key>A68612D16629ED34AF576BD1E5D94391B7182E11</key>
 		<string>../../..</string>
+		<key>ACFD7193FD9E2A3F48E6D0863F74951FF595FC16</key>
+		<string>../../../..</string>
+		<key>E2F476CE895D3596DBE8080E8F363F8F94823E70</key>
+		<string>../../..NetworkObjects/ExSwift</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/colemancda/NetworkObjectsUI.git</string>
@@ -32,9 +56,57 @@
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>ACFD7193FD9E2A3F48E6D0863F74951FF595FC16</string>
+			<key>IDESourceControlWCCName</key>
+			<string></string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>1C75F1C5CFCB95B3702F6F632FA05ED5244B519E</string>
+			<key>IDESourceControlWCCName</key>
+			<string>CocoaAsyncSocket</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>71CFC0DE1DEFC877B0C5B9F98B971EBA2921D608</string>
+			<key>IDESourceControlWCCName</key>
+			<string>CocoaHTTPServer</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>E2F476CE895D3596DBE8080E8F363F8F94823E70</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ExSwift</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
 			<string>A68612D16629ED34AF576BD1E5D94391B7182E11</string>
 			<key>IDESourceControlWCCName</key>
 			<string>NetworkObjectsUI</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>A5260C930E0CFC29BE4E638F3BCB24458F4E5121</string>
+			<key>IDESourceControlWCCName</key>
+			<string>NetworkObjectsUINetworkObjects</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>9D8E50737BD1955BFF09EC27A96CDD52A2431CCE</string>
+			<key>IDESourceControlWCCName</key>
+			<string>RoutingHTTPServer</string>
 		</dict>
 	</array>
 </dict>
