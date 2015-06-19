@@ -57,15 +57,17 @@ public class FetchedResultsViewController: UITableViewController, SearchResultsC
     
     private var searchResultsController: SearchResultsController?
     
+    private var previousSearchResults: [NSManagedObject]?
+    
     // MARK: - Initialization
     
     public override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        let error = self.searchResultsController!.loadCache()
+        let error = self.searchResultsController?.loadCache()
         
-        assert(error == nil, "Could not Could not load cache. (\(error!.localizedDescription))")
+        assert(error == nil, "Could not load cache. (\(error!.localizedDescription))")
     }
     
     public override func viewWillAppear(animated: Bool) {
@@ -150,6 +152,8 @@ public class FetchedResultsViewController: UITableViewController, SearchResultsC
         }
         
         self.datedRefreshed = NSDate()
+        
+        self.previousSearchResults = self.searchResultsController!.searchResults
         
         self.searchResultsController!.performSearch(sender)
     }
@@ -272,6 +276,59 @@ public class FetchedResultsViewController: UITableViewController, SearchResultsC
                 
                 return
             }
+            
+            if self.previousSearchResults == nil {
+                
+                self.tableView.reloadData()
+            }
+            else {
+                
+                // update table view with nice animations...
+                
+                self.tableView.beginUpdates()
+                
+                let results = self.searchResultsController!.searchResults
+                
+                let previousSearchResultsArray = self.previousSearchResults! as NSArray
+                
+                for (index, searchResult) in enumerate(results) {
+                    
+                    // already present
+                    if previousSearchResultsArray.containsObject(searchResult) {
+                        
+                        let previousIndex = previousSearchResultsArray.indexOfObject(searchResult) as Int
+                        
+                        // move cell
+                        if index != previousIndex {
+                            
+                            self.tableView.deleteRowsAtIndexPaths([NSIndexPath(forRow: Int(previousIndex), inSection: 0)], withRowAnimation: .Automatic)
+                            
+                            self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: Int(index), inSection: 0)], withRowAnimation: .Automatic)
+                        }
+                            
+                            // update cell
+                        else {
+                            
+                            let indexPath = NSIndexPath(forRow: Int(index), inSection: 0)
+                            
+                            if let cell = self.tableView.cellForRowAtIndexPath(indexPath) {
+                                
+                                self.configureCell(cell, atIndexPath: indexPath)
+                            }
+                        }
+                    }
+                        
+                        // new managed object
+                    else {
+                        
+                        self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
+                    }
+                }
+                
+                self.tableView.endUpdates()
+            }
+            
+            self.previousSearchResults = nil
         }
     }
     
