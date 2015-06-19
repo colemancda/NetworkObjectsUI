@@ -263,11 +263,11 @@ public class FetchedResultsViewController: UITableViewController, SearchResultsC
     public func controller(controller: SearchResultsController, didPerformSearchWithError error: NSError?) {
         
         NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-            
-            self.refreshControl?.endRefreshing()
-            
+                        
             // show error
             if error != nil {
+                
+                self.refreshControl?.endRefreshing()
                 
                 self.showErrorAlert(error!.localizedDescription, retryHandler: { () -> Void in
                     
@@ -279,7 +279,7 @@ public class FetchedResultsViewController: UITableViewController, SearchResultsC
             
             if self.previousSearchResults == nil {
                 
-                self.tableView.reloadData()
+                //self.tableView.reloadData()
             }
             else {
                 
@@ -329,6 +329,8 @@ public class FetchedResultsViewController: UITableViewController, SearchResultsC
             }
             
             self.previousSearchResults = nil
+            
+            self.refreshControl?.endRefreshing()
         }
     }
     
