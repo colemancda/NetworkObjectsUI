@@ -263,7 +263,7 @@ public class FetchedResultsViewController: UITableViewController, SearchResultsC
     public func controller(controller: SearchResultsController, didPerformSearchWithError error: NSError?) {
         
         NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-                        
+            
             // show error
             if error != nil {
                 
@@ -277,13 +277,9 @@ public class FetchedResultsViewController: UITableViewController, SearchResultsC
                 return
             }
             
-            if self.previousSearchResults == nil {
-                
-                //self.tableView.reloadData()
-            }
-            else {
-                
-                // update table view with nice animations...
+            // update table view with nice animations...
+            
+            if self.previousSearchResults != nil {
                 
                 self.tableView.beginUpdates()
                 
